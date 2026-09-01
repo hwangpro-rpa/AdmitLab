@@ -289,6 +289,33 @@ p.lede {
   margin: 0 0 8px;
 }
 
+.exp-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.exp-row {
+  border-left: 3px solid var(--accent);
+  padding: 4px 0 4px 12px;
+}
+
+.exp-row .exp-org {
+  display: block;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+
+.exp-row .exp-desc {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
 .portfolio-list {
   display: flex;
   flex-direction: column;
