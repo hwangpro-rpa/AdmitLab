@@ -25,6 +25,7 @@
     <button class="tab-btn active" data-tab="jeongsi">정시<br>수능위주</button>
     <button class="tab-btn" data-tab="gyogwa">학생부교과<br>학교추천</button>
     <button class="tab-btn" data-tab="jonghap">학생부종합<br>학업우수</button>
+    <button class="tab-btn" data-tab="compare">대학별<br>반영구조 비교</button>
   </nav>
 
   <section id="panel-jeongsi" class="panel active">
@@ -107,6 +108,27 @@
     </table>
 
     <p class="note">평가등급은 매우우수(A+)~부적격(F)까지 7단계 정성평가로 진행됩니다. 이 전형은 애초에 산출식으로 환원할 수 없도록 설계되어 있으며 — "정량화가 불가능한 항목을 억지로 계산기에 넣지 않는 것" 역시 데이터 분석에서 중요한 판단입니다.</p>
+  </section>
+
+  <section id="panel-compare" class="panel">
+    <p class="panel-title">대학별 정시 반영구조 비교</p>
+    <p class="panel-sub">"정시 = 국·수·탐 백분위 합산"은 통념일 뿐, 실제로는 대학마다 반영구조가 크게 다릅니다. 동일한 수능 성적도 어느 대학에 지원하느냐에 따라 유불리가 갈리는 이유입니다.</p>
+    <span class="source-tag">📎 출처: 대학어디가 · 2026학년도 정시 요강 (고려대·서울대·연세대 일반전형)</span>
+
+    <div class="uni-compare-card">
+      <p class="uni-name">고려대 — 순수 수능형</p>
+      <p class="uni-desc">수능 100% 일괄합산 (국어 200 + 수학 200 + 탐구 160), 영어·한국사는 등급별 감점. 정성평가 요소 없음 — 표준점수/백분위만으로 결정.</p>
+    </div>
+    <div class="uni-compare-card">
+      <p class="uni-name">서울대 — 수능 + 정성평가 혼합형</p>
+      <p class="uni-desc">일반전형: 1단계 수능 100%(2배수 선발) → 2단계 1단계 성적 80 + 교과평가 20. 교과평가는 평가자 2인이 A(5점)·B(3점)·C(0점) 등급을 매겨 조합 점수를 부여하는 정성평가 — 수능 만점이어도 교과평가에서 벌어질 수 있음.</p>
+    </div>
+    <div class="uni-compare-card">
+      <p class="uni-name">연세대 — 유형별 분기형</p>
+      <p class="uni-desc">일반전형(의예·국제 제외): 수능 95% + 학생부 5% 일괄합산. 수능 응시조합(유형 Ⅰ~Ⅳ)에 따라 탐구 가산점(사탐/과탐 응시 시 변환점수의 3%)이 붙는 등, 같은 성적도 응시 조합에 따라 최종 점수가 달라짐.</p>
+    </div>
+
+    <p class="note">이런 반영구조 차이를 분석해 "내 성적이 어느 대학에서 더 유리한지" 알려주는 것이 메가스터디 등 입시 업체의 정시 합격예측 서비스가 하는 일입니다. 이 사이트의 계산기는 그 중 첫 단계 — 공시된 산출식을 정확히 재현하는 것 — 에 초점을 맞춘 데모입니다.</p>
   </section>
 
   <div class="about-card">
