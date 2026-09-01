@@ -15,6 +15,30 @@
 - **학생부종합 학업우수전형 — 고려대**: 서류 100% 정성평가, 평가요소 비중(학업역량 50 / 자기계발역량 30 / 공동체역량 20)만 공개되고 산출식은 없음 — 그대로 정보성 카드로 표시.
 - **대학별 반영구조 비교 — 고려대/서울대/연세대**: 세 대학의 정시 일반전형을 나란히 조회해보면 반영구조 자체가 다르다 — 고려대는 순수 수능 백분위 합산형, 서울대는 1단계 수능 100% → 2단계 수능성적80+정성 교과평가(A/B/C 등급)20의 혼합형, 연세대는 수능 응시유형(Ⅰ~Ⅳ)별로 탐구 가산점이 갈리는 유형 분기형. "정시=단순 합산"이라는 통념이 실제로는 대학마다 다르다는 것을 보여주기 위해 계산기 대신 요약 비교 카드로 넣었다 (서울대·연세대는 다단계+정성평가가 섞여 있어 근사 계산기로 만들면 오히려 부정확해질 위험이 있다고 판단).
 
+## 데이터 파이프라인 (Python + SQL)
+
+사이트에 들어간 반영비율·산출식 원문은 전부 [`scripts/collect_adiga_criteria.py`](scripts/collect_adiga_criteria.py)로 직접 수집했다.
+
+```bash
+pip install -r scripts/requirements.txt
+python scripts/collect_adiga_criteria.py --unv-cd 0000069 --syr 2026 --upper-cd 40 --item-cd 41
+```
+
+동작 방식:
+
+1. **세션 확보(GET)**: 대상 페이지는 폼 뼈대와 CSRF 토큰만 서버 렌더링하고, 실제 콘텐츠는 없다.
+2. **콘텐츠 요청(POST)**: 같은 세션 쿠키 + CSRF 토큰(폼 필드·헤더 양쪽)을 실어 `criteriaAndResultItemAjax.do`에 POST해야 실제 반영비율·산출식 HTML을 내려준다 — 프론트엔드에서는 아코디언 클릭 시 이 요청이 나간다.
+3. **정제**: BeautifulSoup으로 표/문단 구조를 유지한 채 plain text로 변환.
+4. **적재**: SQLite(`admission_criteria` 테이블)에 원본 HTML과 정제 텍스트를 함께 UPSERT — 대학·연도·전형별로 재수집해도 중복되지 않는다.
+
+수집 후 SQL로 바로 조회 가능:
+
+```sql
+SELECT unv_cd, syr, upper_cd, item_cd, length(parsed_text) AS chars, fetched_at
+FROM admission_criteria
+ORDER BY fetched_at DESC;
+```
+
 ## 원칙
 
 - 실제 산출식과 근사치를 명확히 구분해 표기한다 (백분위 기반 정시 계산은 단순화 근사, 학생부교과 등급표는 원문 그대로).
@@ -24,4 +48,5 @@
 ## 구조
 
 - `index.html` / `style.css` / `script.js` — 단일 페이지, 탭 전환(정시/학생부교과/학생부종합/대학별 반영구조 비교), 계산 결과에 stamp 애니메이션.
-- 백엔드 없음, 정적 호스팅(Cloudflare Workers/Pages)으로 배포 — `admitlab.hwangpro-rpa.workers.dev`가 이 레포와 연결되어 push할 때마다 자동 재배포된다.
+- `scripts/collect_adiga_criteria.py` — 데이터 수집 스크립트 (위 "데이터 파이프라인" 참고).
+- 사이트 자체는 백엔드 없음, 정적 호스팅(Cloudflare Workers/Pages)으로 배포 — `admitlab.hwangpro-rpa.workers.dev`가 이 레포와 연결되어 push할 때마다 자동 재배포된다.
