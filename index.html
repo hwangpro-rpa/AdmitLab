@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdmitLab · 합격 예측 랩 — 대학어디가 실제 요강 기반 데모</title>
+<meta name="description" content="대학어디가(adiga.kr)가 공시한 대학별 전형 요강을 바탕으로 정시·학생부교과·학생부종합 반영 방식을 직접 계산해보는 데모 사이트.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">실제 대입 공시자료 기반 데모</span>
+    <h1 class="title">AdmitLab · 합격 예측 랩</h1>
+    <p class="lede">대학어디가(adiga.kr)가 공시한 대학별 전형 요강을 바탕으로, 정시·학생부교과·학생부종합의 실제 반영 방식을 직접 계산해보는 미니 데모입니다.</p>
+    <div class="disclaimer">
+      ⚠️ 이 계산기는 대학어디가에 공시된 <strong>고려대학교 2026학년도 요강</strong>을 참고해 만든 예시용 데모이며, 실제 합격 가능성을 예측하거나 보장하지 않습니다. 정확한 반영 방식은 반드시 해당 대학 입학처의 모집요강을 확인하세요.
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="jeongsi">정시<br>수능위주</button>
+    <button class="tab-btn" data-tab="gyogwa">학생부교과<br>학교추천</button>
+    <button class="tab-btn" data-tab="jonghap">학생부종합<br>학업우수</button>
+  </nav>
+
+  <section id="panel-jeongsi" class="panel active">
+    <p class="panel-title">정시 · 수능위주전형 환산점수</p>
+    <p class="panel-sub">고려대 일반전형 기준 — 국어 200 + 수학 200 + 탐구 160, 영어·한국사는 등급별 감점</p>
+    <span class="source-tag">📎 출처: 대학어디가 · 고려대 2026학년도 정시 요강</span>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="korPercentile">국어 백분위 (0~100)</label>
+        <input type="number" id="korPercentile" min="0" max="100" value="90">
+      </div>
+      <div class="field">
+        <label for="mathPercentile">수학 백분위 (0~100)</label>
+        <input type="number" id="mathPercentile" min="0" max="100" value="90">
+      </div>
+      <div class="field">
+        <label for="tamguPercentile">탐구 평균 백분위 (0~100)</label>
+        <input type="number" id="tamguPercentile" min="0" max="100" value="88">
+      </div>
+      <div class="field">
+        <label for="engGrade">영어 등급 (1~9)</label>
+        <select id="engGrade">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="histGrade">한국사 등급 (1~9)</label>
+        <select id="histGrade">
+          <option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option>
+        </select>
+      </div>
+    </div>
+    <p class="note">※ 백분위는 대학 고유의 표준점수 변환표 대신 사용한 단순화 근사치입니다. 영어·한국사 등급별 감점표는 공시 원문 그대로 사용했습니다.</p>
+
+    <button class="calc-btn" id="jeongsiCalcBtn">환산점수 계산하기</button>
+
+    <div class="result-box" id="jeongsiResult">
+      <div class="result-score" id="jeongsiScore">-</div>
+      <div class="result-breakdown" id="jeongsiBreakdown"></div>
+    </div>
+  </section>
+
+  <section id="panel-gyogwa" class="panel">
+    <p class="panel-title">학생부교과 · 학교추천전형 반영점수</p>
+    <p class="panel-sub">평균 석차등급 → 등급별 반영점수표 → ×0.9 + 서류 10</p>
+    <span class="source-tag">📎 출처: 대학어디가 · 고려대 2026학년도 학생부교과 요강</span>
+
+    <table class="rubric-table">
+      <tr><th>등급</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th></tr>
+      <tr><th>반영점수</th><td>100</td><td>96</td><td>92</td><td>86</td><td>70</td><td>55</td><td>40</td><td>20</td><td>0</td></tr>
+    </table>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="avgGrade">평균 석차등급 (1.0~9.0)</label>
+        <input type="number" id="avgGrade" min="1" max="9" step="0.1" value="2.3">
+      </div>
+    </div>
+    <p class="note">※ 등급 구간 사이 산출식은 원문의 수식이 이미지로 되어 있어 텍스트로 완전히 옮겨지지 않았습니다. 표준적인 선형보간 방식으로 재구성했으며, 등급별 반영점수표는 공시 원문 그대로입니다.</p>
+
+    <button class="calc-btn" id="gyogwaCalcBtn">반영점수 계산하기</button>
+
+    <div class="result-box" id="gyogwaResult">
+      <div class="result-score" id="gyogwaScore">-</div>
+      <div class="result-breakdown" id="gyogwaBreakdown"></div>
+    </div>
+  </section>
+
+  <section id="panel-jonghap" class="panel">
+    <p class="panel-title">학생부종합 · 학업우수전형 평가 기준</p>
+    <p class="panel-sub">서류 100% 정성평가 — 정량 환산식이 없는 전형이라, 계산기 대신 실제 평가 배점 구조를 보여드립니다.</p>
+    <span class="source-tag">📎 출처: 대학어디가 · 고려대 2026학년도 학생부종합 요강</span>
+
+    <table class="rubric-table">
+      <tr><th>평가요소</th><th>학업역량</th><th>자기계발역량</th><th>공동체역량</th></tr>
+      <tr><th>배점</th><td>50</td><td>30</td><td>20</td></tr>
+    </table>
+
+    <p class="note">평가등급은 매우우수(A+)~부적격(F)까지 7단계 정성평가로 진행됩니다. 이 전형은 애초에 산출식으로 환원할 수 없도록 설계되어 있으며 — "정량화가 불가능한 항목을 억지로 계산기에 넣지 않는 것" 역시 데이터 분석에서 중요한 판단입니다.</p>
+  </section>
+
+  <div class="about-card">
+    <h2>이 사이트를 만든 이유</h2>
+    <p>메가스터디교육의 '고등 온라인 입시 데이터 분석' 직무에 지원하며, 실제 업무(전형 산출식 설계·합격 가능성 분석)를 미리 시뮬레이션해보기 위해 만든 미니 데모입니다.</p>
+    <p>기획부터 대학어디가 공시자료 수집, 계산 로직 설계, 프론트엔드 구현까지 전 과정을 Claude(AI 코딩 어시스턴트)와 함께 진행했습니다 — AI 도구를 실무에 활용한 경험을 그대로 보여드리는 예시이기도 합니다.</p>
+    <p style="margin-top:14px; font-weight:700; font-size:0.85rem;">함께 만든 다른 사이트</p>
+    <div class="portfolio-list">
+      <a href="https://k-line-daily.hwangpro-rpa.workers.dev/" target="_blank" rel="noopener">
+        <span>오늘의 K-한마디 — K-드라마·아이돌로 배우는 한국어 (320개 콘텐츠, SEO/GA 연동)</span>
+        <span class="arrow">→</span>
+      </a>
+      <a href="https://emojidle.hwangpro-rpa.workers.dev/" target="_blank" rel="noopener">
+        <span>emojidle — 이모지로 단어 맞히는 데일리 퍼즐 게임</span>
+        <span class="arrow">→</span>
+      </a>
+      <a href="https://hwangpro-rpa.github.io/money-ledger-kr/" target="_blank" rel="noopener">
+        <span>생활 재테크 장부 — 월급·대출·저축 계산기 모음</span>
+        <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>문의: hwangpro.rpa@gmail.com · Built with Claude</p>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
